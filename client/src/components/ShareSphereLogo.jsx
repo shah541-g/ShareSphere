@@ -13,7 +13,7 @@ const ShareSphereLogo = () => {
   }, [text.length]);
 
   return (
-    <div className="flex items-center justify-center p-6">
+    <div className="flex items-center manage-logo-layout justify-start p-6">
       <svg
         width="80"
         height="80"

@@ -38,6 +38,11 @@
     width: 100vw;
   }
 }
+@media(max-width:787px){
+  .manage-logo-layout{
+    justify-content:center;
+  }
+}
 
 @media(max-width:325px){
   .connect-btns{
