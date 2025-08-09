@@ -1,0 +1,75 @@
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&family=Outfit:wght@100..900&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');
+
+@import "tailwindcss";
+
+*{
+  font-family: "Outfit", sans-serif;
+}
+
+.no-scrollbar::-webkit-scrollbar{
+ display:none;
+}
+
+
+@media(max-width:291px){
+  .btn-text{
+    font-size: 15px;
+  }
+}
+@media(max-width:281px){
+  .btn-text{
+    font-size: 14px;
+  }
+}
+
+@media(max-width:294px){
+  .pills-layout{
+    flex-direction: column;
+    width: 100%;
+  }
+  .pills-layout> * {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media(max-width:335px){
+  .width-layout{
+    width: 100vw;
+  }
+}
+
+@media(max-width:325px){
+  .connect-btns{
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+  }
+}
+
+@media (max-width: 310px) {
+  .style-media > * {
+    min-width: 300px;
+  }
+}
+
+@media (max-width: 305px) {
+  .style-media > * {
+    min-width: 260px;
+    
+  }
+}
+
+@media (max-width: 1056px) {
+  .style-media {
+    gap: 2px;
+    justify-content: center;
+    align-items: center;
+  }
+  .style-media > * {
+    border: 1px solid black;
+  }
+  .style-media > * > img {
+    width: 100%;
+  }
+}
