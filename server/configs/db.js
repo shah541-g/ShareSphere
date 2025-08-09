@@ -4,8 +4,7 @@ const connectDB = async () => {
   try {
     mongoose.connection.on('connected', ()=>console.log("Database Connected"))
     
-    await mongoose.connect(`${process.env.MONGODB_URI}/sharesphere`)
-    console.log('connected')
+    await mongoose.connect(`${process.env.MONGODB_URL}/sharesphere`)
   } catch (error) {
     console.log(error.message)
   }
