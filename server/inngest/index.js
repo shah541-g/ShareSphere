@@ -70,7 +70,7 @@ const sendNewConnectionRequestRemainder = inngest.createFunction(
   },{
     event: 'app/connection-request'
   },
-  async (event,step)=> {
+  async ({event,step})=> {
     const {connectionId} = event.data;
 
     await step.run('send-connection-request-mail', async()=> {
@@ -80,7 +80,8 @@ const sendNewConnectionRequestRemainder = inngest.createFunction(
       <div style="font-family:Arial, sans-serif; padding:20px;">
         <h2>Hi ${connection.to_user_id.full_name},</h2>
         <p>You have a new connection request from ${connection.from_user_id.full_name} - @${connection.from_user_id.username}</p>
-        <p>Click <a href="${process.env.FRONTEND_URL}/connections" style:"color:#10b981;">here</a> to accept or reject the request</p>
+        <p>Click <a href="${process.env.FRONTEND_URL}/connections" style="color:#10b981;">
+        here</a> to accept or reject the request</p>
         <br/>
         <p>Thanks, <br/>ShareSphere - Stay Connected</p>
       </div>`
@@ -106,7 +107,8 @@ const sendNewConnectionRequestRemainder = inngest.createFunction(
       <div style="font-family:Arial, sans-serif; padding:20px;">
         <h2>Hi ${connection.to_user_id.full_name},</h2>
         <p>You have a new connection request from ${connection.from_user_id.full_name} - @${connection.from_user_id.username}</p>
-        <p>Click <a href="${process.env.FRONTEND_URL}/connections" style:"color:#10b981;">here</a> to accept or reject the request</p>
+        <p>Click <a href="${process.env.FRONTEND_URL}/connections" style="color:#10b981;">
+        here</a> to accept or reject the request</p>
         <br/>
         <p>Thanks, <br/>ShareSphere - Stay Connected</p>
       </div>`
