@@ -6,10 +6,10 @@ const postSchema = new mongoose.Schema({
     ref: 'User',
     required: true,
   },
-  const: {
+  content: {
     type: String
   },
-  image_url: [{
+  image_urls: [{
     type:String
   }],
   post_type: {
@@ -18,8 +18,9 @@ const postSchema = new mongoose.Schema({
     require:true
   },
   likes_count:{
-    type: String,
+    type: [String],
     ref: 'User',
+    default:[],
     required: true,
   },
 },{timestamps: true, minimize:false})
