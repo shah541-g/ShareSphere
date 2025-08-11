@@ -4,14 +4,36 @@ import Loading from '../components/Loading';
 import StoriesBar from '../components/StoriesBar';
 import PostCard from '../components/PostCard';
 import RecentMessages from '../components/RecentMessages';
+import { useAuth } from '@clerk/clerk-react';
+import api from '../api/axios';
+import toast from 'react-hot-toast';
 
 const Feed = () => {
   const [feeds, setFeeds] = useState([]);
   const [loading, setLoading] = useState(true);
+  const {getToken} = useAuth()
+
 
   const fetchFeeds = async() => {
-    setFeeds(dummyPostsData)
-    setLoading(prev => !prev)
+    try {
+      setLoading(true)
+      const {data} = await api.get('/api/post/feed', {
+        headers: {
+          Authorization: `Bearer ${await getToken()}`
+        }
+      })
+      
+        console.log('API Response:', data);
+      if(data.success){
+        console.log('API Response:', data);
+        setFeeds(data.post)
+      }else{
+        toast.error(data.message)
+      }
+    } catch (error) {
+      toast.error(error.message)
+    }
+    setLoading(false)
   }
 
   useEffect(()=>{fetchFeeds()},[])

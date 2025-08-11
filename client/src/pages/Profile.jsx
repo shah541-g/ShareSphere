@@ -1,30 +1,57 @@
 import { Link, useParams } from "react-router-dom";
-import { dummyPostsData, dummyUserData } from "../assets/assets";
 import { useEffect, useState } from "react";
 import Loading from "../components/Loading";
 import UserProfileInfo from "../components/UserProfileInfo";
 import PostCard from "../components/PostCard";
 import moment from "moment";
 import ProfileModal from "../components/ProfileModal";
+import { useAuth } from "@clerk/clerk-react";
+import { useSelector } from "react-redux";
+import toast from "react-hot-toast";
+import api from "../api/axios";
 
 const Profile = () => {
+
+  const currentUser =  useSelector((state)=>state.user.value)
+  const {getToken} = useAuth()
   const { profileId } = useParams();
   const [user, setUser] = useState(null);
   const [posts, setPosts] = useState([]);
   const [activeTab, setActiveTab] = useState("posts");
   const [showEdit, setShowEdit] = useState(false);
 
-  const fetchUser = async () => {
-    setUser(dummyUserData);
-    setPosts(dummyPostsData);
+  const fetchUser = async (profileId) => {
+    const token = await getToken()
+    try {
+      const {data} = await api.post(`/api/user/profiles`,{profileId}, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+      if(data.success){
+        setUser(data.profile)
+        setPosts(data.posts)
+      }
+      else{
+        toast.error(data.message)
+      }
+    } catch (error) {
+      toast.error(error.message)
+    }
   };
 
   useEffect(() => {
-    fetchUser();
-  }, []);
+    if(profileId){
+
+      fetchUser(profileId);
+    }
+    else{
+      fetchUser(currentUser._id)
+    }
+  }, [profileId, currentUser]);
 
   return user ? (
-    <div className="h-full width-layout no-scrollbar relative justify-self-center overflow-y-scroll bg-gray-50 p-6">
+    <div className="h-full width-layout no-scrollbar relative justify-self-center overflow-y-scroll bg-gray-50 p-6 w-[80%]">
       <div className="max-w-3xl mx-auto">
         {/* Profile Card */}
         <div className="bg-white rounded-2xl shadow overflow-hidden">
@@ -33,7 +60,7 @@ const Profile = () => {
             {user.cover_photo && (
               <img
                 src={user.cover_photo}
-                className="w-full h-full object-cover"
+                className="w-[100%] h-[100%] object-cover"
                 alt=""
               />
             )}
@@ -69,7 +96,7 @@ const Profile = () => {
 
           {/* Posts */}
           {activeTab === "posts" && (
-            <div className="mt-6 flex flex-col items-create gap-6">
+            <div className="mt-6 items-center justify-center flex flex-col items-create gap-6">
               {posts.map((post) => (
                 <PostCard key={post._id} post={post} />
               ))}
