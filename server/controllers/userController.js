@@ -114,40 +114,119 @@ export const updateUserData = async (req, res) => {
   }
 };
 
+// getAll Users
+export const getAllUsers = async (req, res) => {
+  try {
+    const { userId } = await req.auth();
+    const page = parseInt(req.query.page) || 1;  // default page = 1
+    const limit = parseInt(req.query.limit) || 10; // default limit = 10
+    const skip = (page - 1) * limit;
+
+    // Exclude the logged-in user from the list
+    const users = await User.find({ _id: { $ne: userId } })
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    // Check if more users exist after this batch
+    const totalUsers = await User.countDocuments({ _id: { $ne: userId } });
+    const hasMore = page * limit < totalUsers;
+
+    res.json({
+      success: true,
+      users,
+      hasMore
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.json({
+      success: false,
+      message: error.message
+    });
+  }
+};
 
 
 // Find user using username, email, location and name
 
 
-export const discoverUsers = async (req,res) => {
+// export const discoverUsers = async (req,res) => {
+//   try {
+//       const { userId } = await req.auth()
+//       const {input} = req.body;
+
+//       const allUsers = await User.find(
+//         {
+//           $or: [
+//             {username: new RegExp(input, 'i')},
+//             {email: new RegExp(input, 'i')},
+//             {full_name: new RegExp(input, 'i')},
+//             {location: new RegExp(input, 'i')},
+//           ]
+//         }
+//       )
+//       const filteredUsers = allUsers.filter(user=> user._id!== userId)
+
+//       res.json({
+//         success: true,
+//         users: filteredUsers
+//       })
+//   } catch (error) {
+//     console.log(error)
+//     res.json({
+//       success:false, 
+//       message: error.message
+//     })
+//   }
+// }
+
+export const discoverUsers = async (req, res) => {
   try {
-      const { userId } = await req.auth()
-      const {input} = req.body;
+    const { userId } = await req.auth();
+    const { input } = req.body;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
 
-      const allUsers = await User.find(
-        {
-          $or: [
-            {username: new RegExp(input, 'i')},
-            {email: new RegExp(input, 'i')},
-            {full_name: new RegExp(input, 'i')},
-            {location: new RegExp(input, 'i')},
-          ]
-        }
-      )
-      const filteredUsers = allUsers.filter(user=> user._id!== userId)
+    const allUsers = await User.find(
+      {
+        _id: { $ne: userId },
+        $or: [
+          { username: new RegExp(input, "i") },
+          { email: new RegExp(input, "i") },
+          { full_name: new RegExp(input, "i") },
+          { location: new RegExp(input, "i") },
+        ],
+      }
+    )
+      .skip(skip)
+      .limit(limit);
 
-      res.json({
-        success: true,
-        users: filteredUsers
-      })
-  } catch (error) {
-    console.log(error)
+    const totalUsers = await User.countDocuments({
+      _id: { $ne: userId },
+      $or: [
+        { username: new RegExp(input, "i") },
+        { email: new RegExp(input, "i") },
+        { full_name: new RegExp(input, "i") },
+        { location: new RegExp(input, "i") },
+      ],
+    });
+
     res.json({
-      success:false, 
-      message: error.message
-    })
+      success: true,
+      users: allUsers,
+      hasMore: page * limit < totalUsers,
+    });
+  } catch (error) {
+    console.log(error);
+    res.json({
+      success: false,
+      message: error.message,
+    });
   }
-}
+};
+
 
 
 

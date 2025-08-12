@@ -13,8 +13,13 @@ import {
 import { protect } from "../middlewares/auth.js";
 import { upload } from "../configs/multer.js";
 import { getUserRecentMessages } from "../controllers/messageController.js";
+import { getAllUsers } from "../controllers/userController.js";
 
 const userRouter = express.Router();
+
+
+
+userRouter.get("/all", protect, getAllUsers);
 
 userRouter.get("/data", protect, getUserData);
 userRouter.post(
