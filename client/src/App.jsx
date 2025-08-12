@@ -15,6 +15,7 @@ import { useAuth } from '@clerk/clerk-react'
 import { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { fetchUser } from './features/user/userSlice'
+import { fetchConnections } from './features/connections/connectionsSlice'
 
 
 const App = () => {
@@ -28,6 +29,7 @@ const App = () => {
       if(user){
         const token = await getToken()
         dispatch(fetchUser(token))
+        dispatch(fetchConnections(token))
       }
     }
     fetchData()
