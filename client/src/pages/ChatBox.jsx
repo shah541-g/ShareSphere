@@ -1,5 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
-import { dummyMessagesData, dummyUserData } from "../assets/assets";
+import { useEffect, useRef, useState } from "react";
 import { ImageIcon, SendHorizonal } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
@@ -18,7 +17,7 @@ const ChatBox = () => {
   const [text, setText] = useState("");
   const [image, setImage] = useState(null);
   const [user, setUser] = useState(null);
-  const connections = useSelector((state)=>state.connectioons.connections)
+  const connections = useSelector((state)=>state.connections.connections)
 
   const messagesEndRef = useRef(null);
 
@@ -65,13 +64,15 @@ const ChatBox = () => {
   useEffect(()=>{
     fetchUserMessages()
     return ()=> {
-      dispatch(resetMessage)
+      dispatch(resetMessage())
     }
   },[userId])
 
   useEffect(()=>{
     if(connections.length > 0){
-      const user = connections.find(connection=> connection._id == userId)
+      const user = connections.find(connection=> connection._id === userId)
+      console.log(connections, userId);
+
       setUser(user)
     }
   },[connections, userId])
@@ -81,7 +82,7 @@ const ChatBox = () => {
   }, [messages]);
 
   return (
-    user && (
+    user ? (
       <div className="flex flex-col h-full">
         <div className="flex items-center gap-2 p-2 md:px-10 bg-gradientt-to-r from-indigo-50 to-purple-50 border-b border-gray-300">
           <img
@@ -166,7 +167,7 @@ const ChatBox = () => {
           </div>
         </div>
       </div>
-    )
+    ) : <p>User hi nahi ha</p>
   );
 };
 

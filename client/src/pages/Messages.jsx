@@ -31,7 +31,9 @@ const Messages = () => {
             </div>
               <p className='text-sm text-gray-600'>{user.bio}</p>
             <div className="flex flex-row justify-end gap-2 mt-4">
-              <button onClick={() => navigate(`/messages/${user._id}`)} className='size-10 flex items-center justify-center text-sm rounded bg-slate-100 hover:bg-slate-200 text-slate-800 active:scale-95 transition cursor-pointer gap-1'>
+              <button onClick={() => {
+                const userId = user._id
+                navigate(`/messages/${userId}`)}} className='size-10 flex items-center justify-center text-sm rounded bg-slate-100 hover:bg-slate-200 text-slate-800 active:scale-95 transition cursor-pointer gap-1'>
                 <MessageSquare className='w-4 h-4'/>
               </button>
               <button onClick={() => navigate(`/profile/${user._id}`)} className='size-10 flex items-center justify-center text-sm rounded bg-slate-100 hover:bg-slate-200 text-slate-800 active:scale-95 transition cursor-pointer'>

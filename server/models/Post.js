@@ -15,7 +15,7 @@ const postSchema = new mongoose.Schema({
   post_type: {
     type:String,
     enum: ['text', 'image', 'text_with_image'],
-    require:true
+    required:true
   },
   likes_count:{
     type: [String],
