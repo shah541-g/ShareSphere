@@ -2,8 +2,8 @@ import fs from "fs";
 import imagekit from "../configs/imagekit.js";
 import Post from "../models/Post.js";
 import User from "../models/User.js";
+import Reply from "../models/Reply.js";
 
-// Add Post
 export const addPost = async (req, res) => {
   try {
     const { userId } = await req.auth();
@@ -55,31 +55,99 @@ export const addPost = async (req, res) => {
 };
 
 
-// Get Posts
+export const getPostById = async (req, res) => {
+  try {
+    const { postId } = req.params;
+
+    const post = await Post.findById(postId)
+      .populate("user")
+      .lean();
+
+    if (!post) {
+      return res.status(404).json({
+        success: false,
+        message: "Post not found"
+      });
+    }
+    const replies = await Reply.find({
+      post_id: post._id
+    })
+      .populate("replier_id")
+      .sort({ createdAt: -1 })
+      .lean();
+
+    post.replies = replies;
+    post.total_replies = replies.length;
+
+    res.json({
+      success: true,
+      post
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+};
 
 export const getFeedPosts = async (req, res) => {
   try {
     const { userId } = await req.auth();
     const user = await User.findById(userId);
 
-    // User Connections and followings
+
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+
     const userIds = [userId, ...user.connections, ...user.following];
-    const post = await Post.find({ user: { $in: userIds } })
+
+
+    const posts = await Post.find({ user: { $in: userIds } })
       .populate("user")
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .lean();
+
+
+    const repliesLimit = parseInt(req.query.repliesLimit) || 3;
+
+    for (let post of posts) {
+      const replies = await Reply.find({
+        post_id: post._id
+      })
+        .populate("replier_id")
+        .sort({ createdAt: -1 })
+        .limit(repliesLimit)
+        .lean();
+
+      post.replies = replies;
+      post.total_replies = await Reply.countDocuments({
+        post_id: post._id
+      });
+    }
 
     res.json({
       success: true,
-      post,
+      posts,
+      currentPage: page,
+      hasMore: posts.length === limit
     });
+
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.json({
       success: false,
-      message: error.message,
+      message: error.message
     });
   }
 };
+
+
 // Like Posts
 
 export const likePost = async (req, res) => {

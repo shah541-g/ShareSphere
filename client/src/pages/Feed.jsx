@@ -13,28 +13,26 @@ const Feed = () => {
   const [loading, setLoading] = useState(true);
   const {getToken} = useAuth()
 
-
-  const fetchFeeds = async() => {
-    try {
-      setLoading(true)
-      const {data} = await api.get('/api/post/feed', {
-        headers: {
-          Authorization: `Bearer ${await getToken()}`
-        }
-      })
-      
-        console.log('API Response:', data);
-      if(data.success){
-        console.log('API Response:', data);
-        setFeeds(data.post)
-      }else{
-        toast.error(data.message)
+  const fetchFeeds = async () => {
+  try {
+    setLoading(true);
+    const { data } = await api.get('/api/post/feed', {
+      headers: {
+        Authorization: `Bearer ${await getToken()}`
       }
-    } catch (error) {
-      toast.error(error.message)
+    });
+
+    if (data.success) {
+      setFeeds(data.posts);
+    } else {
+      toast.error(data.message);
     }
-    setLoading(false)
+  } catch (error) {
+    toast.error(error.message);
   }
+  setLoading(false);
+};
+
 
   useEffect(()=>{fetchFeeds()},[])
   return !loading ? (
