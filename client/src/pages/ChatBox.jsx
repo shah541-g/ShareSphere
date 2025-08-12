@@ -71,7 +71,6 @@ const ChatBox = () => {
   useEffect(()=>{
     if(connections.length > 0){
       const user = connections.find(connection=> connection._id === userId)
-      console.log(connections, userId);
 
       setUser(user)
     }
