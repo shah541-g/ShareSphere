@@ -5,6 +5,7 @@ import { useAuth } from "@clerk/clerk-react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
 import { fetchUser } from "../features/user/userSlice";
+import toast from "react-hot-toast";
 
 const UserCard = ({ user }) => {
   const currentUser =  useSelector((state)=>state.user.value);
