@@ -19,7 +19,7 @@ const messageSchema = new mongoose.Schema({
     type: String,
     enum: ["text", "image"],
   },
-  media_url: { tyep: String },
+  media_url: { type: String },
   seen: { type: Boolean, default: false },
 }, {timestamps:true, minimize:false});
 

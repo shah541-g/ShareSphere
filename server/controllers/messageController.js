@@ -54,6 +54,7 @@ export const sendMessage = async (req, res) => {
           { width: "1280" },
         ],
       });
+      
     }
 
     const message = await Message.create({

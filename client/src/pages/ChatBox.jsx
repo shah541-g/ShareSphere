@@ -147,7 +147,7 @@ const ChatBox = () => {
                   alt=""
                 />
               ) : (
-                <ImageIcon className="size-7 text-gray-400 cursor-pointer" />
+                <ImageIcon className="size-7 text-gray-800 cursor-pointer" />
               )}
               <input
                 type="file"
