@@ -11,16 +11,16 @@ export const ssController = (req, res) => {
   console.log("New Client Connected: ", userId);
 
   // Set Server Side headers
-  res.setHeader("Content-Type", "text/event-stream");
-  res.setHeader("Cache-Control", "no-cache");
-  res.setHeader("Connection", "keep-alive");
-  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache');
+  res.setHeader('Connection', 'keep-alive');
+  res.setHeader('Access-Control-Allow-Origin', '*');
 
   // Add the client's response object to the connection object
   connections[userId] = res;
 
   // Send an initla event to the client
-  res.write("log: Connected to Server Side Stream\n\n");
+  res.write('log: Connected to Server Side Stream\n\n');
 
   // Handle client disconnection
   req.on("close", () => {

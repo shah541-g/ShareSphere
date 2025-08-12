@@ -20,11 +20,12 @@ import { useRef } from 'react'
 import { addMessage } from './features/messages/messagesSlice'
 
 
+
 const App = () => {
   const {user} = useUser()
   const { getToken } = useAuth()
   const dispatch = useDispatch()
-  const pathname = useLocation()
+  const {pathname} = useLocation()
   const pathnameRef = useRef(pathname)
 
   useEffect(()=>{
@@ -45,12 +46,14 @@ const App = () => {
 
   useEffect(()=>{
     if(user){
-      const eventSource = new EventSource(import.meta.env.VITE_BASEURL + '/api/message/' + user.id)
+      const endpoint = import.meta.env.VITE_BASEURL + '/api/message/' + user.id
+      console.log(endpoint)
+      const eventSource = new EventSource(endpoint)
 
       eventSource.onmessage = (event)=>{
         const message = JSON.parse(event.data)
 
-        if(pathnameRef.current === ('/message/' + message.from_user_id._id)){
+        if(pathnameRef.current === ('/messages/' + message.from_user_id._id)){
           dispatch(addMessage(message))
         }else{
 
