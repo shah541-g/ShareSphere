@@ -198,8 +198,6 @@ const PostCard = ({ post }) => {
 
       {/* Replies */}
       {replies.map(reply => {
-        console.log("Reply: ")
-        console.log(reply)
         return renderReply(reply)
       })
       
