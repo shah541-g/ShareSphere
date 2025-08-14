@@ -12,7 +12,7 @@ const PostCard = ({ post }) => {
 
   const [likes, setLikes] = useState(post.likes_count || []);
   const [replies, setReplies] = useState([]);
-  const [replyCount, setReplyCount] = useState(post.total_replies || 0); // ⬅ NEW state
+  const [replyCount, setReplyCount] = useState(post.total_replies || 0); 
   const [page, setPage] = useState(1);
   const [hasMoreReplies, setHasMoreReplies] = useState(true);
   const [replyText, setReplyText] = useState('');
@@ -87,6 +87,8 @@ const PostCard = ({ post }) => {
       );
 
       if (data.success) {
+        console.log("data.reply")
+        console.log(data.reply)
         setReplies((prev) => [data.reply, ...prev]);
         setReplyText('');
         setReplyCount((prev) => prev + 1); // ⬅ Increment count
@@ -132,11 +134,11 @@ const PostCard = ({ post }) => {
   );
 
   return (
-    <div className="bg-white rounded-xl shadow p-4 space-y-4 w-full max-w-2xl">
+    <div className="bg-white rounded-xl shadow p-4 space-y-4 w-full max-w-2xl m-2">
       {/* User Info */}
       <div
         onClick={() => navigate(`/profile/${post.user._id}`)}
-        className="inline-flex items-center gap-3 cursor-pointer"
+        className="inline-flex post-card-layout items-center gap-3 cursor-pointer"
       >
         <img src={post.user.profile_picture} className="w-10 h-10 rounded-full shadow" alt="" />
         <div>
@@ -195,7 +197,13 @@ const PostCard = ({ post }) => {
       </div>
 
       {/* Replies */}
-      {replies.map(renderReply)}
+      {replies.map(reply => {
+        console.log("Reply: ")
+        console.log(reply)
+        return renderReply(reply)
+      })
+      
+      }
 
       {hasMoreReplies && (
         <button
@@ -207,7 +215,7 @@ const PostCard = ({ post }) => {
       )}
 
       {/* Main reply input */}
-      <div className="flex gap-2 pt-2 border-t border-gray-200">
+      <div className="flex reply-layout flex-wrap gap-2 pt-2 border-t border-gray-200">
         <input
           type="text"
           placeholder="Write a reply..."

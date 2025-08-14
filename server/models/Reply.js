@@ -9,6 +9,7 @@ const replySchema = new mongoose.Schema(
     },
     replier_id: { type: String, ref: "User", required: true },
     text: { type: String, required: true },
+    iv: { type: String, default: '' },
   },
   { timestamps: true, minimize: false }
 );

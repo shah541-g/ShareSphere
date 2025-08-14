@@ -46,7 +46,6 @@ const App = () => {
   useEffect(() => {
     if (user) {
       const endpoint = import.meta.env.VITE_BASEURL + "/api/message/" + user.id;
-      console.log(endpoint);
       const eventSource = new EventSource(endpoint);
 
       eventSource.onmessage = (event) => {

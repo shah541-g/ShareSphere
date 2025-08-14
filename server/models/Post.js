@@ -23,6 +23,7 @@ const postSchema = new mongoose.Schema({
     default:[],
     required: true,
   },
+  iv: { type: String, default: '' }, 
 },{timestamps: true, minimize:false})
 
 const Post = mongoose.model('Post', postSchema)

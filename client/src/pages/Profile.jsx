@@ -51,7 +51,7 @@ const Profile = () => {
   }, [profileId, currentUser]);
 
   return user ? (
-    <div className="h-full width-layout no-scrollbar relative justify-self-center overflow-y-scroll bg-gray-50 p-6 w-[80%]">
+    <div className="h-full w-[80%] width-layout no-scrollbar relative justify-self-center overflow-y-scroll bg-gray-50 p-6 ">
       <div className="max-w-3xl mx-auto">
         {/* Profile Card */}
         <div className="bg-white rounded-2xl shadow overflow-hidden">

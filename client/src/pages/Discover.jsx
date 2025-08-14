@@ -114,9 +114,9 @@ const Discover = () => {
 
         {/* Users */}
         <div className="flex justify-center flex-wrap gap-6 px-6">
-          {users.map((user) => (
+          {users.length!==0 ? users.map((user) => (
             <UserCard user={user} key={user._id} />
-          ))}
+          )) : <p className="text-center py-4 text-slate-500">No more users</p>}
         </div>
 
         {loading && <Loading height="20vh" />}

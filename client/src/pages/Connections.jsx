@@ -7,6 +7,7 @@ import { useAuth } from '@clerk/clerk-react'
 import { fetchConnections } from '../features/connections/connectionsSlice'
 import api from '../api/axios'
 import toast from 'react-hot-toast'
+import DiagonalWaveCard from '../components/DiagonalWaveCard'
 
 const Connections = () => {
   const [currentTab, setCurrentTab] = useState("Followers")
@@ -105,7 +106,7 @@ const Connections = () => {
         {/* Connections */}
 
         <div className="flex justify-center flex-wrap gap-6 mt-6">
-          {dataArray.find((item)=>item.label === currentTab).value.map((user)=>(
+          {dataArray.find((item)=>item.label === currentTab).value.length!==0 ?  dataArray.find((item)=>item.label === currentTab).value.map((user)=>(
             <div key={user._id} className='w-full max-w-88 flex flex-col text-center gap-5 p-6 bg-white shadow rounded-md'>
               <img className='rounded-full w-12 h-12 shadow-md mx-auto' src={user.profile_picture} alt="" />
               <div className="flex-1">
@@ -139,7 +140,7 @@ const Connections = () => {
                   }
                 </div>
             </div>
-          ))}
+          )) : <DiagonalWaveCard height='min-h-[50vh]' message={`${currentTab} 0`} fontSize='text-2xl' width="min-w-[100%]" highlight='0'/>}
         </div>
       </div>
       

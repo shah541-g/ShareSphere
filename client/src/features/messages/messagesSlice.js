@@ -13,7 +13,6 @@ export const fetchMessages = createAsyncThunk('messages/fetchMessages', async ({
       Authorization: `Bearer ${token}`
     }
   })
-  console.log(data)
   return data.success ? data : null
 })
 

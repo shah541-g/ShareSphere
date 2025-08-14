@@ -26,6 +26,7 @@ const storySchema = new mongoose.Schema(
         ref: "User",
       },
     ],
+    iv: { type: String, default: '' },
     background_color: { type: String },
   },
   { timestamps: true, minimize: false }

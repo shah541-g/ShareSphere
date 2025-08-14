@@ -47,7 +47,7 @@ const StoryModal = ({ setShowModal, fetchStories }) => {
         video.preload = "metadata";
         video.onloadedmetadata = () => {
           window.URL.revokeObjectURL(video.src);
-          if (video.duration > 60) {
+          if (video.duration > MAX_VIDEO_DURATION) {
             toast.error("Video Duration can not exceed 1 minute");
             setMedia(null);
             setPreviewUrl(null);

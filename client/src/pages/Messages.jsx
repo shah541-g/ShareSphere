@@ -3,6 +3,7 @@ import { dummyConnectionsData } from '../assets/assets'
 import { Eye, MessageSquare } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
+import DiagonalWaveCard from '../components/DiagonalWaveCard'
 
 const Messages = () => {
   const navigate = useNavigate()
@@ -20,7 +21,7 @@ const Messages = () => {
 
         {/* Connected Users */}
         <div className="flex flex-col gap-3">
-          {connections.map((user)=>(
+          {connections.length!==0 ? connections.map((user)=>(
             <div key={user._id} className='flex flex-col flex-wrap gap-5 p-6 bg-white shadow rounded-md'>
             <div className='flex-1 flex'>
             <img className='rounded-full size-12' src={user.profile_picture} alt="" />
@@ -40,7 +41,7 @@ const Messages = () => {
                 <Eye className='w-4 h-4'/>
               </button>
             </div>
-          </div>))}
+          </div>)) : <DiagonalWaveCard width="max-w-[100%] min-w-[100%]" message='First build connections' fontSize='text-2xl' height='min-h-[80vh]' highlight='connections'/>}
         </div>
       </div>
       

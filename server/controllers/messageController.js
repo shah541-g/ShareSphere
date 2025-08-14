@@ -1,7 +1,7 @@
 import fs from "fs";
 import imagekit from "../configs/imagekit.js";
 import Message from "../models/Message.js";
-import { error } from "console";
+import { encryptText, decryptText } from "../utils/cryptoUtils.js";
 // Create an empty object to store Server Side Event Connections
 const connections = {};
 
@@ -11,16 +11,16 @@ export const ssController = (req, res) => {
   console.log("New Client Connected: ", userId);
 
   // Set Server Side headers
-  res.setHeader('Content-Type', 'text/event-stream');
-  res.setHeader('Cache-Control', 'no-cache');
-  res.setHeader('Connection', 'keep-alive');
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader("Content-Type", "text/event-stream");
+  res.setHeader("Cache-Control", "no-cache");
+  res.setHeader("Connection", "keep-alive");
+  res.setHeader("Access-Control-Allow-Origin", "*");
 
   // Add the client's response object to the connection object
   connections[userId] = res;
 
   // Send an initla event to the client
-  res.write('log: Connected to Server Side Stream\n\n');
+  res.write("log: Connected to Server Side Stream\n\n");
 
   // Handle client disconnection
   req.on("close", () => {
@@ -54,20 +54,22 @@ export const sendMessage = async (req, res) => {
           { width: "1280" },
         ],
       });
-      
     }
+
+    let encryptedText = text ? encryptText(text) : null;
 
     const message = await Message.create({
       from_user_id: userId,
       to_user_id,
-      text,
+      text: encryptedText ? encryptedText.encryptedData : "",
+      iv: encryptedText ? encryptedText.iv : "",
       message_type,
       media_url,
     });
 
     res.json({
       success: true,
-      message,
+      message: { ...message._doc, text: text || "" },
     });
 
     // Send message to to_user_id using Server Side Event
@@ -75,9 +77,19 @@ export const sendMessage = async (req, res) => {
       "from_user_id"
     );
 
+    const decryptedMessage = {
+      ...messageWithUserData._doc,
+      text: messageWithUserData.text
+        ? decryptText({
+            iv: messageWithUserData.iv,
+            encryptedData: messageWithUserData.text,
+          })
+        : "",
+    };
+
     if (connections[to_user_id]) {
       connections[to_user_id].write(
-        `data: ${JSON.stringify(messageWithUserData)}\n\n`
+        `data: ${JSON.stringify(decryptedMessage)}\n\n`
       );
     }
   } catch (error) {
@@ -94,6 +106,9 @@ export const getChatMessages = async (req, res) => {
   try {
     const { userId } = req.auth();
     const { to_user_id } = req.body;
+    if (!to_user_id) {
+      throw new Error("Recipient ID is required");
+    }
     const messages = await Message.find({
       $or: [
         { from_user_id: userId, to_user_id },
@@ -102,6 +117,16 @@ export const getChatMessages = async (req, res) => {
     }).sort({
       createdAt: -1,
     });
+
+    const decryptedMessages = messages.map((message) => ({
+      ...message._doc,
+      text: message.text
+        ? decryptText({
+            iv: message.iv,
+            encryptedData: message.text,
+          })
+        : "",
+    }));
     // mark message asseen
     await Message.updateMany(
       {
@@ -112,7 +137,7 @@ export const getChatMessages = async (req, res) => {
     );
     res.json({
       success: true,
-      messages,
+      messages: decryptedMessages,
     });
   } catch (error) {
     res.json({
@@ -132,9 +157,19 @@ export const getUserRecentMessages = async (req, res) => {
       .sort({
         createdAt: -1,
       });
+
+    const decryptedMessages = messages.map((message) => ({
+      ...message._doc,
+      text: message.text
+        ? decryptText({
+            iv: message.iv,
+            encryptedData: message.text,
+          })
+        : "",
+    }));
     res.json({
       success: true,
-      messages,
+      messages: decryptedMessages,
     });
   } catch (error) {
     res.json({
