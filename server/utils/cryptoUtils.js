@@ -5,7 +5,7 @@ import crypto from "crypto";
 const ENCRYPTION_KEY = Buffer.from(process.env.ENCRYPTION_KEY, 'hex');
 
 // Validate encryption key length
-if (ENCRYPTION_KEY.length !== 32) {
+if (ENCRYPTION_KEY.length !== process.env.ENCRYPTION_KEY_LENGTH) {
   throw new Error('Invalid encryption key length. Must be 32 bytes.');
 }
 
