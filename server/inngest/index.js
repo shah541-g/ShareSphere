@@ -4,6 +4,7 @@ import Connection from "../models/Connection.js";
 import sendEmail from "../configs/nodemailer.js";
 import { sendConnectionRequest } from "../controllers/userController.js";
 import Story from "../models/Story.js";
+import Message from "../models/Message.js";
 
 // Create a client to send and receive events
 export const inngest = new Inngest({ id: "sharesphere" });
@@ -152,7 +153,7 @@ const deleteStory = inngest.createFunction(
 
 const sendNotificationOfUnseenMessages = inngest.createFunction(
   {id: 'seen-unseen-messages-notification'},
-  {event: 'TZ=America/New_Nork 0 9 * * *'}, // Every Day at 9AM
+  {event: 'TZ=Asia/Karachi 0 18 * * *'}, // Every Day at 9AM
   async ({step}) => {
     const messages = await Message.find({
       seen:false
