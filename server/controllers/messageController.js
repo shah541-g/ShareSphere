@@ -88,6 +88,10 @@ export const sendMessage = async (req, res) => {
     };
 
     if (connections[to_user_id]) {
+      await Message.findByIdAndUpdate(message._id, { seen: true });
+
+      decryptedMessage.seen = true;
+
       connections[to_user_id].write(
         `data: ${JSON.stringify(decryptedMessage)}\n\n`
       );
