@@ -35,7 +35,10 @@ const messagesSlice = createSlice({
   extraReducers : (builder)=>{
     builder.addCase(fetchMessages.fulfilled, (state, action)=>{
       if(action.payload){
-        state.messages = action.payload.messages
+        state.messages = action.payload.messages.map(msg=>({
+          ...msg,
+          seen:true
+        }))
       }
     })
   }
