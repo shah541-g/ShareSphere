@@ -23,7 +23,7 @@ export const addUserStory = async (req, res) => {
       media_url = response.url;
     }
 
-    const encryptedContent = encryptText(content);
+    const encryptedContent = content ? encryptText(content) : null;
 
     // create story
     const story = await Story.create({
