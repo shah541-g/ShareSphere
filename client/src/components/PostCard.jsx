@@ -153,12 +153,12 @@ const PostCard = ({ post }) => {
       </div>
 
       {/* Content */}
-      {post.content && (
+      {post.content.length > 0 ? (
         <div
           className="text-gray-800 text-sm whitespace-pre-line"
           dangerouslySetInnerHTML={{ __html: formattedContent }}
         />
-      )}
+      ) : null}
 
       {/* Images */}
       {post.image_urls?.length > 0 && (

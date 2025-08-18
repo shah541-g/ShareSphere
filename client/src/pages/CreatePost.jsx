@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { dummyUserData } from '../assets/assets'
 import { Images, X } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { useSelector } from 'react-redux'
@@ -25,6 +24,7 @@ const CreatePost = () => {
     const postType = images.length && content ? 'text_with_image' : images.length ? 'image' : 'text'
 
     try {
+      console.log(content)
       const formData = new FormData()
       formData.append('content', content)
       formData.append('post_type', postType)

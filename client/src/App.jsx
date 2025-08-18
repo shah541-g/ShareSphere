@@ -59,11 +59,22 @@ const App = () => {
           });
         }
       };
+
+      // 🔹 Handle "seen" events
+      eventSource.addEventListener("seen", (event) => {
+        const data = JSON.parse(event.data);
+
+        // Here you should update Redux so all messages sent *to* this user are marked seen
+        // Example: dispatch a new reducer (markMessagesSeen) to update store
+        dispatch({ type: "messages/markSeen", payload: data.to_user_id });
+      });
+
       return () => {
         eventSource.close();
       };
     }
   }, [user, dispatch]);
+
   return (
     <>
       <Toaster />
@@ -77,7 +88,7 @@ const App = () => {
           <Route path="profile" element={<Profile />} />
           <Route path="profile/:profileId" element={<Profile />} />
           <Route path="create-post" element={<CreatePost />} />
-          <Route path="post/:postId" element={<PostPage />} /> 
+          <Route path="post/:postId" element={<PostPage />} />
         </Route>
       </Routes>
     </>

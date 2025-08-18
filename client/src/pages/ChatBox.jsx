@@ -62,6 +62,33 @@ const ChatBox = () => {
     }
   };
 
+useEffect(() => {
+  const markSeen = async () => {
+    if (messages.length === 0) return;
+
+    const lastMessage = messages[messages.length - 1];
+
+    // if last message is from chat partner and not seen
+    if (lastMessage.from_user_id._id === userId && !lastMessage.seen) {
+      try {
+        const token = await getToken();
+        await api.post(
+          "/api/message/seen",
+          { from_user_id: userId },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+      } catch (error) {
+        console.error("Seen update failed:", error);
+      }
+    }
+  };
+
+  markSeen();
+  
+}, [messages, userId, getToken]);
+
+
+
   useEffect(() => {
     fetchUserMessages();
     return () => {

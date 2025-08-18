@@ -110,14 +110,13 @@ export const getChatMessages = async (req, res) => {
     if (!to_user_id) {
       throw new Error("Recipient ID is required");
     }
+
     const messages = await Message.find({
       $or: [
         { from_user_id: userId, to_user_id },
         { from_user_id: to_user_id, to_user_id: userId },
       ],
-    }).sort({
-      createdAt: -1,
-    });
+    }).sort({ createdAt: -1 });
 
     const decryptedMessages = messages.map((message) => ({
       ...message._doc,
@@ -128,25 +127,31 @@ export const getChatMessages = async (req, res) => {
           })
         : "",
     }));
-    // mark message asseen
-    await Message.updateMany(
-      {
-        from_user_id: to_user_id,
-        to_user_id: userId,
-      },
+
+    const updateResult = await Message.updateMany(
+      { from_user_id: to_user_id, to_user_id: userId, seen: false },
       { seen: true }
     );
+
+    if (updateResult.modifiedCount > 0 && connections[to_user_id]) {
+      connections[to_user_id].write(
+        `event: seen\n` +
+        `data: ${JSON.stringify({ to_user_id: userId })}\n\n`
+      );
+    }
+
     res.json({
       success: true,
       messages: decryptedMessages,
     });
   } catch (error) {
     res.json({
-      success: true,
+      success: false,
       message: error.message,
     });
   }
 };
+
 
 export const getUserRecentMessages = async (req, res) => {
   try {
@@ -175,6 +180,47 @@ export const getUserRecentMessages = async (req, res) => {
   } catch (error) {
     res.json({
       success: true,
+      message: error.message,
+    });
+  }
+};
+
+
+// Mark Messages as Seen
+// Mark Messages as Seen
+export const markMessagesSeen = async (req, res) => {
+  try {
+    const { userId } = req.auth(); // logged-in user (receiver)
+    const { from_user_id } = req.body; // chat partner (sender)
+
+    if (!from_user_id) {
+      throw new Error("from_user_id is required");
+    }
+
+    // Update all unseen messages from that user to me
+    await Message.updateMany(
+      {
+        from_user_id,
+        to_user_id: userId,
+        seen: false,
+      },
+      { seen: true }
+    );
+
+    res.json({
+      success: true,
+      message: "Messages marked as seen",
+    });
+
+    if (connections[from_user_id]) {
+      connections[from_user_id].write(
+        `event: seen\n` +
+        `data: ${JSON.stringify({ to_user_id: userId })}\n\n`
+      );
+    }
+  } catch (error) {
+    res.json({
+      success: false,
       message: error.message,
     });
   }

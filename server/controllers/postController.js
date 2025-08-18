@@ -10,10 +10,6 @@ export const addPost = async (req, res) => {
     const { userId } = await req.auth();
     const { content, post_type } = req.body;
 
-    if (!content) {
-      throw new Error("Post content is required");
-    }
-
     let image_urls = [];
 
     if (req.files && req.files.length) {
@@ -37,12 +33,12 @@ export const addPost = async (req, res) => {
       );
     }
 
-    const encryptedContent = encryptText(content);
+    const encryptedContent = content ? encryptText(content) : null;
 
     await Post.create({
       user: userId,
       content: encryptedContent ? encryptedContent.encryptedData : "",
-      iv: encryptedContent.iv,
+      iv: encryptedContent ? encryptedContent.iv : "",
       image_urls,
       post_type,
       likes_count: [],
@@ -76,7 +72,7 @@ export const getPostById = async (req, res) => {
     }
     const decryptedPost = {
       ...post,
-      content: post.content
+      content: post.content.length > 0
         ? decryptText({
             iv: post.iv,
             encryptedData: post.content,
@@ -136,7 +132,7 @@ export const getFeedPosts = async (req, res) => {
 
     const decryptedPosts = posts.map((post) => ({
       ...post,
-      content: post.content
+      content: post.content.length > 0
         ? decryptText({
             iv: post.iv,
             encryptedData: post.content,

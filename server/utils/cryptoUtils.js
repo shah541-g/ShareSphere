@@ -6,7 +6,7 @@ const ENCRYPTION_KEY = Buffer.from(process.env.ENCRYPTION_KEY, 'hex');
 
 // Validate encryption key length
 if (ENCRYPTION_KEY.length !== Number(process.env.ENCRYPTION_KEY_LENGTH)) {
-  throw new Error('Invalid encryption key length. Must be 32 bytes.');
+  throw new Error(`Invalid encryption key length. Must be ${process.env.ENCRYPTION_KEY_LENGTH} bytes.`);
 }
 
 // Encryption function
